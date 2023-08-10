@@ -1,20 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Home } from "./pages/Home/Home";
+import AlataRegular from "./assets/fonts/Alata-Regular.ttf";
+import { useFonts } from "expo-font";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [isFontLoaded] = useFonts({
+    "Alata-Regular": AlataRegular,
+  });
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  return isFontLoaded ? (
+    <Home />
+  ) : null;
+}
