@@ -10,13 +10,16 @@ import { MeteoBasic } from "../../components/MeteoBasic/MeteoBasic";
 import { getWeatherInterpretation } from "../../services/meteo-service";
 import { MeteoAdvanced } from "../../components/MeteoAdvanced/MeteoAdvanced";
 import { Container } from "../../components/Container/Container";
-
+import { useNavigation } from "@react-navigation/native";
+import SearchBar from "../../components/SearchBar/SearchBar";
 
 export function Home() {
     const [coords, setCoords] = useState();
     const [weather, setWeather] = useState();
     const [city, setCity] = useState();
   
+    const nav = useNavigation();
+
     const currentWeather = weather?.current_weather;
   
     useEffect(() => {
@@ -57,15 +60,19 @@ export function Home() {
       setCity(cityResponse);
     }
   
-    async function fetchCoordsByCity(city) {
-      try {
-        const coords = await MeteoAPI.fetchCoordsFromCity(city);
-        setCoords(coords);
-      } catch (e) {
-        Alert.alert("Oups !", e);
-      }
+    function goToForecastPage() {
+        nav.navigate("Forecast", { city, ...weather.daily });
     }
-  
+
+    async function fetchCoordsByCity(city) {
+        try {
+          const coords = await MeteoAPI.fetchCoordsFromCity(city);
+          setCoords(coords);
+        } catch (e) {
+          Alert.alert("Oups !", e);
+        }
+      }
+
     return (
       <Container>
         {currentWeather ? (
@@ -77,10 +84,11 @@ export function Home() {
                 interpretation={getWeatherInterpretation(
                   currentWeather.weathercode
                 )}
+                onPress={goToForecastPage}
               />
             </View>
             <View style={s.searchbar_container}>
-  
+                <SearchBar onSubmit={fetchCoordsByCity} />
             </View>
             <View style={s.meteo_advanced}>
               <MeteoAdvanced
